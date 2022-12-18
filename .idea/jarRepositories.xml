@@ -13,6 +13,16 @@
     </remote-repository>
     <remote-repository>
       <option name="id" value="github" />
+      <option name="name" value="GitHub Java XIPC Apache Maven Packages" />
+      <option name="url" value="https://maven.pkg.github.com/sanjay-wq/XIPCClient" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="github1" />
+      <option name="name" value="GitHub Java XIPC Apache Maven Packages" />
+      <option name="url" value="https://maven.pkg.github.com/sanjay-wq/XIPCClient" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="github" />
       <option name="name" value="github" />
       <option name="url" value="https://maven.pkg.github.com/widequery/widequery-repo" />
     </remote-repository>
