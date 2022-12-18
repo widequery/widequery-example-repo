@@ -110,9 +110,9 @@ public class ExcelReader {
         Cell cell = queryRow.getCell(queryColIndex);
         if (cell == null) continue;
         if (cell.getStringCellValue().equals("SELECT"))
-          selectList.add(cell.getStringCellValue() + "=" + colIndexColNameMap.get(queryColIndex));
+          selectList.add(colIndexColNameMap.get(queryColIndex));
         if (cell.getStringCellValue().equals("WHERE"))
-          whereList.add(cell.getStringCellValue() + "=" + colIndexColNameMap.get(queryColIndex));
+          whereList.add(colIndexColNameMap.get(queryColIndex));
       }
       selectQueryTemplateConfigs.add(new SelectQueryTemplateConfig(selectList, whereList));
     }

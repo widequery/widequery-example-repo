@@ -4,10 +4,12 @@ import com.widequery.client.WideQueryBuilder;
 import com.widequery.client.table.ColumnValue;
 import com.widequery.client.table.Row;
 import com.widequery.client.table.WideTable;
+import com.widequery.config.ColumnNameClassMaping;
 import com.widequery.config.SelectQueryTemplateConfig;
 import com.widequery.config.WideTableConfig;
 import com.widequery.service.KeyValue;
 import com.widequery.service.StoreService;
+import com.widequery.wql.SelectQuery;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -29,13 +31,34 @@ public class WideTableDemoSimulator {
 
     excelReader.open();
     WideTableConfig tableConfig = excelReader.getTableSchema();
+    for (ColumnNameClassMaping columnNameClassMaping: tableConfig.getColumnNameClassMapings()) {
+      System.out.println(columnNameClassMaping.getColumnName() + " " + columnNameClassMaping.getClassType());
+    }
+
     ArrayList<SelectQueryTemplateConfig> selectQueryTemplateConfigs = excelReader.getQueryTemplates();
 
+    for (SelectQueryTemplateConfig selectQueryTemplateConfig : selectQueryTemplateConfigs) {
+      ArrayList<String> selectList = selectQueryTemplateConfig.getSelectList();
+      ArrayList<String> whereList = selectQueryTemplateConfig.getWhereList();
+
+      for (String selectString: selectList) {
+        System.out.println("Select " + selectString);
+      }
+
+      for (String whereString: whereList) {
+        System.out.println("Where " + whereString);
+      }
+
+      System.out.println("--------");
+    }
     excelReader.close();
     WideTable wideTable = WideQueryBuilder.createTable(wideTableName, tableConfig, new HashmapStoreService());
     WideQueryBuilder.configureSelectQueryTemplates(wideTable, selectQueryTemplateConfigs);
 
     injectRowsIntoTable(wideTable);
+
+    runQueries(wideTable);
+
   }
 
   private void injectRowsIntoTable(WideTable table) {
@@ -76,6 +99,33 @@ public class WideTableDemoSimulator {
     table.insert(row);
   }
 
+  private void runQueries(WideTable table) {
+    SelectQuery selectQuery1 =
+            new SelectQuery.Builder()
+                    .selectFrom(table, table.getColumnType("col4"))
+                    .where("col1", 210)
+                    .where("col2", 220)
+                    .where("col3", new BigDecimal("2.0003"))
+                    .build();
+
+    SelectQuery selectQuery2 =
+            new SelectQuery.Builder()
+                    .selectFrom(table, table.getColumnType("col1"))
+                    .where("col2", 320)
+                    .where("col4", 340)
+                    .build();
+
+    ArrayList<SelectQuery> selectQueries = new ArrayList<>();
+    selectQueries.add(selectQuery1);
+    selectQueries.add(selectQuery2);
+
+    ArrayList<KeyValue> keyValues = table.execute(selectQueries);
+
+    for (KeyValue keyValue : keyValues){
+      System.out.println(keyValue);
+    }
+
+  }
   public static void main(String[] args) throws IOException {
     String demoExcelProfileFilename = "src/main/resources/profile1/Table1.xlsx";
     //String demoExcelProfileFilename = "profile1/Table1.xlsx";
