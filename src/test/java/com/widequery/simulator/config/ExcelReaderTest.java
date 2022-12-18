@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 
 public class ExcelReaderTest {
-  @Test
   public void readTest() throws IOException {
     ExcelReader excelReader = new ExcelReader("src/test/resources/Table1.xlsx");
     excelReader.open();

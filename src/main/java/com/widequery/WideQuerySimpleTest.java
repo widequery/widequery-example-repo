@@ -25,7 +25,7 @@ public class WideQuerySimpleTest {
       .column("col2", Integer.class)
       .column("col3", BigDecimal.class)
       .column("col4", Integer.class)
-      .storeService(storeService)
+      //.storeService(storeService)
       .build();
   }
 
