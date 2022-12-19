@@ -21,21 +21,24 @@ public class WideTableDemoSimulator {
   private String wideTableName;
   private String demoExcelProfileFilename;
 
+  private ExcelReaderWriter excelReaderWriter;
+
   public WideTableDemoSimulator(String wideTableName, String demoExcelProfileFilename) {
     this.wideTableName = wideTableName;
    this.demoExcelProfileFilename = demoExcelProfileFilename;
   }
 
   public void run() throws IOException {
-    ExcelReader excelReader = new ExcelReader(demoExcelProfileFilename);
+    excelReaderWriter = new ExcelReaderWriter(demoExcelProfileFilename);
 
-    excelReader.open();
-    WideTableConfig tableConfig = excelReader.getTableSchema();
+    excelReaderWriter.open();
+
+    WideTableConfig tableConfig = excelReaderWriter.getTableSchema();
     for (ColumnNameClassMaping columnNameClassMaping: tableConfig.getColumnNameClassMapings()) {
       System.out.println(columnNameClassMaping.getColumnName() + " " + columnNameClassMaping.getClassType());
     }
 
-    ArrayList<SelectQueryTemplateConfig> selectQueryTemplateConfigs = excelReader.getQueryTemplates();
+    ArrayList<SelectQueryTemplateConfig> selectQueryTemplateConfigs = excelReaderWriter.getQueryTemplates();
 
     for (SelectQueryTemplateConfig selectQueryTemplateConfig : selectQueryTemplateConfigs) {
       ArrayList<String> selectList = selectQueryTemplateConfig.getSelectList();
@@ -51,7 +54,10 @@ public class WideTableDemoSimulator {
 
       System.out.println("--------");
     }
-    excelReader.close();
+
+    excelReaderWriter.populateExcelSheet(10, tableConfig);
+
+    //excelReaderWriter.close();
     WideTable wideTable = WideQueryBuilder.createTable(wideTableName, tableConfig, new HashmapStoreService());
     WideQueryBuilder.configureSelectQueryTemplates(wideTable, selectQueryTemplateConfigs);
 
@@ -61,58 +67,37 @@ public class WideTableDemoSimulator {
 
   }
 
-  private void injectRowsIntoTable(WideTable table) {
-    Row row = new Row.Builder(table)
-      .column("col1", 110)
-      .column("col2", 120)
-      .column("col3", new BigDecimal("1.0003"))
-      .column("col4", 140)
-      .build();
+  private void injectRowsIntoTable(WideTable table) throws IOException {
+    //excelReaderWriter.open();
 
-    table.insert(row);
+    WideTableConfig tableConfig = excelReaderWriter.getTableSchema();
 
-    row = new Row.Builder(table)
-      .column("col1", 210)
-      .column("col2", 220)
-      .column("col3", new BigDecimal("2.0003"))
-      .column("col4", 240)
-      .build();
+    ArrayList<ArrayList<ColumnValue>> rows = excelReaderWriter.getRows(tableConfig);
 
-    table.insert(row);
-
-    row = new Row.Builder(table)
-      .column("col1", 310)
-      .column("col2", 320)
-      .column("col3", new BigDecimal("3.0003"))
-      .column("col4", 340)
-      .build();
-
-    table.insert(row);
-
-    row = new Row.Builder(table)
-      .column("col1", 410)
-      .column("col2", 420)
-      .column("col3", new BigDecimal("4.0004"))
-      .column("col4", 440)
-      .build();
-
-    table.insert(row);
+    for (ArrayList<ColumnValue> row : rows){
+      Row.Builder builder = new Row.Builder(table);
+      for (ColumnValue columnValue : row){
+        builder.column(columnValue.getColumnType().getColumnName(), columnValue.getValue());
+      }
+      Row rowl = builder.build();
+      table.insert(rowl);
+    }
+    excelReaderWriter.close();
   }
 
   private void runQueries(WideTable table) {
     SelectQuery selectQuery1 =
             new SelectQuery.Builder()
-                    .selectFrom(table, table.getColumnType("col4"))
-                    .where("col1", 210)
-                    .where("col2", 220)
-                    .where("col3", new BigDecimal("2.0003"))
+                    .selectFrom(table, table.getColumnType("col1"))
+                    .where("col3", new BigDecimal("1.03"))
+                    .where("col4", 104)
                     .build();
 
     SelectQuery selectQuery2 =
             new SelectQuery.Builder()
                     .selectFrom(table, table.getColumnType("col1"))
-                    .where("col2", 320)
-                    .where("col4", 340)
+                    .where("col2", 202)
+                    .where("col3", new BigDecimal("2.03"))
                     .build();
 
     ArrayList<SelectQuery> selectQueries = new ArrayList<>();
@@ -127,7 +112,7 @@ public class WideTableDemoSimulator {
 
   }
   public static void main(String[] args) throws IOException {
-    String demoExcelProfileFilename = "src/main/resources/profile1/Table1.xlsx";
+    String demoExcelProfileFilename = "src/main/resources/profile2/Table1.xlsx";
     //String demoExcelProfileFilename = "profile1/Table1.xlsx";
     String tableName = "Table1";
 
@@ -142,6 +127,7 @@ public class WideTableDemoSimulator {
     public void put(ArrayList<KeyValue> keyValues) {
       for (KeyValue keyValue : keyValues) {
         cacheMap.put(keyValue.getKey(), keyValue.getColumnValue());
+        System.out.println("Key=" + keyValue.getKey() + " Value=" + keyValue.getColumnValue());
       }
     }
 
