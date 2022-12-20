@@ -58,7 +58,9 @@ public class WideTableDemoSimulator {
     excelReaderWriter.populateExcelSheet(10, tableConfig);
 
     //excelReaderWriter.close();
-    WideTable wideTable = WideQueryBuilder.createTable(wideTableName, tableConfig, new HashmapStoreService());
+    //WideTable wideTable = WideQueryBuilder.createTable(wideTableName, tableConfig, new HashmapStoreService());
+    WideTable wideTable = WideQueryBuilder.createTable(wideTableName, tableConfig);
+
     WideQueryBuilder.configureSelectQueryTemplates(wideTable, selectQueryTemplateConfigs);
 
     injectRowsIntoTable(wideTable);

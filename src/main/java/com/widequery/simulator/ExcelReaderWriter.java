@@ -21,6 +21,7 @@ import java.util.*;
 public class ExcelReaderWriter {
 
   private String filename;
+  private File file;
   private XSSFWorkbook workbook;
 
   private FileInputStream fis;
@@ -35,7 +36,7 @@ public class ExcelReaderWriter {
 
   public void open() throws IOException {
 
-    File file = new File(filename);
+    file = new File(filename);
 
     if (!file.exists())
       throw new RuntimeException(filename + " does not exist");
@@ -49,13 +50,15 @@ public class ExcelReaderWriter {
     this.workbook = new XSSFWorkbook(fis);
 
     System.out.println(filename + " open");
-    fos = new FileOutputStream(file);
+    //fos = new FileOutputStream(file);
 
   }
 
   public void close() throws IOException {
-    fis.close();
-    fos.close();
+    if (fis != null)
+      fis.close();
+    if (fos != null)
+      fos.close();
   }
 
   public WideTableConfig getTableSchema() {
@@ -85,6 +88,9 @@ public class ExcelReaderWriter {
   public void populateExcelSheet(int numRows, WideTableConfig wideTableConfig) throws IOException {
     XSSFSheet sheet = workbook.getSheet("Data");
     if(sheet != null) return;
+
+    fos = new FileOutputStream(file);
+
 
     sheet = workbook.createSheet("Data");
 
