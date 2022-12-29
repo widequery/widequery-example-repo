@@ -12,7 +12,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: com.widequery:widequery:1.12-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: com.widequery:widequery:1.13-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: io.github.classgraph:classgraph:4.8.146" level="project" />
     <orderEntry type="library" name="Maven: org.junit.jupiter:junit-jupiter:5.8.2" level="project" />
     <orderEntry type="library" name="Maven: org.junit.jupiter:junit-jupiter-api:5.8.2" level="project" />

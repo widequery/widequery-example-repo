@@ -1,5 +1,6 @@
 package com.widequery.simulator;
 
+import com.widequery.PropertyHelper;
 import com.widequery.client.WideQueryBuilder;
 import com.widequery.client.table.ColumnValue;
 import com.widequery.client.table.Row;
@@ -9,6 +10,7 @@ import com.widequery.config.SelectQueryTemplateConfig;
 import com.widequery.config.WideTableConfig;
 import com.widequery.service.KeyValue;
 import com.widequery.service.StoreService;
+import com.widequery.service.impl.XIPCKeyValueStoreService;
 import com.widequery.wql.SelectQuery;
 
 import java.io.IOException;
@@ -59,7 +61,8 @@ public class WideTableDemoSimulator {
 
     //excelReaderWriter.close();
     //WideTable wideTable = WideQueryBuilder.createTable(wideTableName, tableConfig, new HashmapStoreService());
-    WideTable wideTable = WideQueryBuilder.createTable(wideTableName, tableConfig);
+    StoreService storeService = new XIPCKeyValueStoreService(PropertyHelper.getPropValues().get("com.xipc.instanceName"), PropertyHelper.getPropValues().get("com.xipc.username"));
+    WideTable wideTable = WideQueryBuilder.createTable(wideTableName, tableConfig, storeService);
 
     WideQueryBuilder.configureSelectQueryTemplates(wideTable, selectQueryTemplateConfigs);
 
