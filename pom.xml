@@ -55,7 +55,7 @@
         <dependency>
             <groupId>com.widequery</groupId>
             <artifactId>widequery</artifactId>
-            <version>1.14-SNAPSHOT</version>
+            <version>1.16-SNAPSHOT</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.poi/poi -->
         <!-- https://mvnrepository.com/artifact/org.apache.poi/poi -->

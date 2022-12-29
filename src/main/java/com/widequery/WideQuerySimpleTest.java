@@ -5,6 +5,7 @@ import com.widequery.client.table.Row;
 import com.widequery.client.table.WideTable;
 import com.widequery.service.KeyValue;
 import com.widequery.service.StoreService;
+import com.widequery.service.impl.XIPCKeyValueStoreService;
 import com.widequery.wql.SelectQuery;
 import com.widequery.wql.template.SelectQueryTemplate;
 
@@ -25,7 +26,7 @@ public class WideQuerySimpleTest {
       .column("col2", Integer.class)
       .column("col3", BigDecimal.class)
       .column("col4", Integer.class)
-      //.storeService(storeService)
+      .storeService(storeService)
       .build();
   }
 
@@ -116,7 +117,8 @@ public class WideQuerySimpleTest {
   }
 
   private void test() {
-    createTable("TestTable1", new HashmapStoreService());
+    //createTable("TestTable1", new HashmapStoreService());
+    createTable("TestTable1", new XIPCKeyValueStoreService("@localhost:xipc","widequeryTest"));
     configureSelectQueryTemplates();
     injectRowsIntoTable();
     runQueries();
